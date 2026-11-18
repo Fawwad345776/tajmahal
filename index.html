@@ -243,10 +243,14 @@ const TOPIC='mfsoft-demos-f7e46c94d0', SITE='Taj Mahal Mangaf';
 const isOwner=(()=>{try{return localStorage.getItem('mfsoft-owner')==='1'}catch(e){return false}})();
 const TEST=/[?&]test/.test(location.search);
 const DEV=/Mobi|Android|iPhone/i.test(navigator.userAgent)?'phone':'computer';
+const EXTRA=(()=>{ try{ const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'?';
+  const bot=(navigator.webdriver||/Headless|bot|crawl|spider|preview/i.test(navigator.userAgent))?'🤖 BOT':'👤 human';
+  const br=/Edg\//.test(navigator.userAgent)?'Edge':/Chrome\//.test(navigator.userAgent)?'Chrome':/Safari\//.test(navigator.userAgent)?'Safari':/Firefox/.test(navigator.userAgent)?'Firefox':'other';
+  return tz+' · '+screen.width+'x'+screen.height+' · '+br+' · '+bot; }catch(e){ return '?'; } })();
 function banner(msg,ok){let b=document.getElementById('tbanner');if(!b){b=document.createElement('div');b.id='tbanner';b.style.cssText='position:fixed;top:70px;left:10px;right:10px;z-index:99;padding:14px;border-radius:14px;font:600 15px Poppins,sans-serif;box-shadow:0 8px 20px rgba(0,0,0,.2)';document.body.appendChild(b);}b.style.background=ok?'#b8ffcf':'#ffc2c2';b.textContent=msg;}
 function hit(key){ if(isOwner&&!TEST) return;
   const L={views:'👀 website kholi',cart:'🛒 order cart khola',contact:'📞 WhatsApp/Call dabaya',order:'✅ order bheja'};
-  const p=fetch('https://ntfy.sh/'+TOPIC,{method:'POST',body:SITE+' | '+key+' | '+(L[key]||key)+' | '+DEV+(TEST?' (test)':''),keepalive:true});
+  const p=fetch('https://ntfy.sh/'+TOPIC,{method:'POST',body:SITE+' | '+key+' | '+(L[key]||key)+' | '+DEV+(TEST?' (test)':'')+' | '+EXTRA,keepalive:true});
   if(TEST) banner('⏳ Test: visit bhej raha hoon…',true);
   p.then(r=>{if(TEST)banner(r.ok?'✅ Test kamyab: "'+key+'" record ho gaya. Stats page Refresh karein.':'❌ ntfy status '+r.status,r.ok);}).catch(e=>{if(TEST)banner('❌ ntfy tak nahi pohncha: '+e,false);}); }
 try{ if(TEST||!sessionStorage.getItem('tm-seen')){ sessionStorage.setItem('tm-seen','1'); hit('views'); } }catch(e){ hit('views'); }
